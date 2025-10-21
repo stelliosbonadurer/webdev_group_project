@@ -9,6 +9,27 @@
   <form method="post">
     {% csrf_token %}
     {{ form|crispy }}
+
+    <hr />
+    <h4>TA Details</h4>
+    {{ ta_form|crispy }}
+
+    <hr />
+    <h4>Availability</h4>
+    {{ availability_formset.management_form }}
+    {% for f in availability_formset.forms %}
+      {{ f.id }}
+      <div class="border rounded p-2 mb-2">
+        <div class="row">
+          <div class="col-md-4">{{ f.day_of_week|as_crispy_field }}</div>
+          <div class="col-md-3">{{ f.start_time|as_crispy_field }}</div>
+          <div class="col-md-3">{{ f.end_time|as_crispy_field }}</div>
+          {% if availability_formset.can_delete %}
+            <div class="col-md-2">{{ f.DELETE|as_crispy_field }}</div>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
     <button class="btn btn-success" type="submit">Sign Up</button>
   </form>
 {% endblock %}

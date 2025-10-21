@@ -4,15 +4,63 @@
   Home
 {% endblock %}
 {% block content %}
-  {% if user.is_authenticated %}
-    <p>Hi {{ user.username }}!</p>
-    <form action="{% url 'logout' %}" method="post">
-      {% csrf_token %}
-      <button type="submit">Log Out</button>
-    </form>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Teaching Assistants</h2>
+    <div>
+      {% if user.is_authenticated %}
+        <form action="{% url 'logout' %}" method="post" class="d-inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-secondary btn-sm">Log Out</button>
+        </form>
+      {% else %}
+        <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm">Log In</a>
+        <a href="{% url 'signup' %}" class="btn btn-primary btn-sm ms-2">Sign Up</a>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if tas %}
+    <div class="row row-cols-1 row-cols-md-2 g-3">
+      {% for ta in tas %}
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">{{ ta.user.get_full_name|default:ta.user.username }}</h5>
+
+              <h6 class="mt-2">Eligible Classes</h6>
+              {% if ta.eligible_courses.all %}
+                <ul class="mb-2">
+                  {% for c in ta.eligible_courses.all %}
+                    <li>{{ c.code }} — {{ c.name }}</li>
+                  {% empty %}
+                    <li><span class="text-muted">None</span></li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <p class="text-muted">None</p>
+              {% endif %}
+
+              <h6 class="mt-3">Availability</h6>
+              {% if ta.availabilities.all %}
+                <ul class="mb-0">
+                  {% for av in ta.availabilities.all %}
+                    <li>
+                      {{ av.get_day_of_week_display }}:
+                      {{ av.start_time|time:"H:i" }} – {{ av.end_time|time:"H:i" }}
+                    </li>
+                  {% empty %}
+                    <li><span class="text-muted">No availability listed</span></li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <p class="text-muted">No availability listed</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
   {% else %}
-    <p>You are not logged in</p>
-    <a href="{% url 'login' %}">Log In</a> |
-    <a href="{% url 'signup' %}">Sign Up</a>
+    <p class="text-muted">No TAs yet. Be the first to <a href="{% url 'signup' %}">sign up</a>.</p>
   {% endif %}
 {% endblock %}

@@ -27,9 +27,9 @@
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="#">Home</a>
         </li>
-        {% if user.is_authenticated %}
-        <li><a href="#" class="nav-link px-2 link-dark">+ New</a></li>
-        {% endif %}
+  {% if user.is_authenticated and user.is_ta %}
+  <li><a href="{% url 'ta_edit' %}" class="nav-link px-2 link-dark">Edit My TA Profile</a></li>
+  {% endif %}
       </ul>
       <div class="mr-auto">
         <ul class="navbar-nav">

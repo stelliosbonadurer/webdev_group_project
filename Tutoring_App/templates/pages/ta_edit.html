@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit My TA Profile{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12 col-lg-10 col-xl-8">
+    <h2>Edit My TA Profile</h2>
+    <form method="post">
+      {% csrf_token %}
+
+      <h4>Eligible Courses</h4>
+      {{ ta_form|crispy }}
+
+      <hr />
+      <h4>Availability</h4>
+      {{ availability_formset.management_form }}
+      {% for f in availability_formset.forms %}
+        {{ f.id }}
+        <div class="border rounded p-2 mb-2">
+          <div class="row">
+            <div class="col-md-4">{{ f.day_of_week|as_crispy_field }}</div>
+            <div class="col-md-3">{{ f.start_time|as_crispy_field }}</div>
+            <div class="col-md-3">{{ f.end_time|as_crispy_field }}</div>
+            {% if availability_formset.can_delete %}
+              <div class="col-md-2">{{ f.DELETE|as_crispy_field }}</div>
+            {% endif %}
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-muted">No availability yet. Add rows above.</p>
+      {% endfor %}
+
+      <button type="submit" class="btn btn-primary">Save</button>
+      <a href="{% url 'home' %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}
