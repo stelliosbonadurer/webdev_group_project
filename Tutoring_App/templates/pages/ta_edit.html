@@ -9,8 +9,6 @@
     <h2>Edit My TA Profile</h2>
     <form method="post">
       {% csrf_token %}
-
-      <h4>Eligible Courses</h4>
       {{ ta_form|crispy }}
 
       <hr />

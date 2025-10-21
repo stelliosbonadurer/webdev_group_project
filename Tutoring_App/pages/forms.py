@@ -7,7 +7,7 @@ class TAProfileForm(forms.ModelForm):
         queryset=Course.objects.all(),
         required=False,
         widget=forms.CheckboxSelectMultiple,
-        label="Eligible courses",
+        label="Courses",
     )
 
     class Meta:
