@@ -3,3 +3,4 @@ news/__pycache__/
 news/db.sqlite3
 Tutoring_App/db.sqlite3
 *.pyc
+**/__pycache__/
