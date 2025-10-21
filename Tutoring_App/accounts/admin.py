@@ -15,17 +15,16 @@ class CustomUserAdmin(UserAdmin):
     list_display = [
     "email",
     "username",
-    "age",
     "is_staff",
     ]
-    fieldsets = UserAdmin.fieldsets + ((None, {"fields": ("age",)}),)
-    # Show email and age on the add form in addition to the defaults
+    fieldsets = UserAdmin.fieldsets
+    # Show email on the add form in addition to the defaults
     add_fieldsets = (
         (
             None,
             {
                 "classes": ("wide",),
-                "fields": ("username", "email", "age", "password1", "password2"),
+                "fields": ("username", "email", "password1", "password2"),
             },
         ),
     )

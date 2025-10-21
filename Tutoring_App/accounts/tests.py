@@ -2,6 +2,9 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
+from django.contrib.admin.sites import site
+
+from pages.models import TAProfile
 
 
 class UsersManagersTests(TestCase):
@@ -55,3 +58,30 @@ class SignupPageTests(TestCase):
 		self.assertEqual(response.status_code, 302)
 		self.assertEqual(get_user_model().objects.count(), 1)
 		self.assertEqual(get_user_model().objects.first().username, "testuser")
+
+	def test_signup_creates_ta_profile_without_availability(self):
+		# Post minimal valid signup data (no availability submitted)
+		response = self.client.post(
+			reverse("signup"),
+			{
+				"username": "tauser",
+				"email": "tauser@email.com",
+				"password1": "testpass123",
+				"password2": "testpass123",
+			},
+		)
+		self.assertEqual(response.status_code, 302)
+		user = get_user_model().objects.get(username="tauser")
+		# TA profile is created and has no availabilities by default
+		self.assertTrue(hasattr(user, "ta_profile"))
+		self.assertEqual(user.ta_profile.availabilities.count(), 0)
+
+
+class AdminRegistrationTests(TestCase):
+	def test_customuser_registered_with_taprofile_inline(self):
+		User = get_user_model()
+		self.assertIn(User, site._registry)  # registered in admin
+		admin_class = site._registry[User]
+		# Inline classes are kept on the ModelAdmin subclass as 'inlines'
+		inline_models = [getattr(inline, "model", None) for inline in getattr(admin_class, "inlines", [])]
+		self.assertIn(TAProfile, inline_models)

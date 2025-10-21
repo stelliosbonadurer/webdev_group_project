@@ -13,6 +13,13 @@
 
       <hr />
       <h4>Availability</h4>
+      {% if availability_formset.non_form_errors %}
+        <ul class="errorlist nonfield">
+          {% for e in availability_formset.non_form_errors %}
+            <li>{{ e }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
       {{ availability_formset.management_form }}
       {% for f in availability_formset.forms %}
         {{ f.id }}
