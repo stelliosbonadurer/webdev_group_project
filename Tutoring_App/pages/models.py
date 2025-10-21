@@ -25,6 +25,8 @@ class TAProfile(models.Model):
         on_delete=models.CASCADE,
         related_name="ta_profile",
     )
+    # Optional display name to show publicly instead of username
+    display_name = models.CharField(max_length=100, blank=True)
     #Each TA can have multiple courses and visa versa
     eligible_courses = models.ManyToManyField(
         Course, related_name="eligible_tas", blank=True

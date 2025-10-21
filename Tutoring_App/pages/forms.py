@@ -3,6 +3,12 @@ from django.forms import inlineformset_factory
 from .models import TAProfile, Availability, Course
 
 class TAProfileForm(forms.ModelForm):
+    display_name = forms.CharField(
+        max_length=100,
+        required=False,
+        label="Display name",
+        help_text="Optional name shown on the homepage (defaults to your username).",
+    )
     eligible_courses = forms.ModelMultipleChoiceField(
         queryset=Course.objects.all(),
         required=False,
@@ -12,7 +18,7 @@ class TAProfileForm(forms.ModelForm):
 
     class Meta:
         model = TAProfile
-        fields = ["eligible_courses"]
+        fields = ["display_name", "eligible_courses"]
 
 AvailabilityInlineFormSet = inlineformset_factory(
     TAProfile,

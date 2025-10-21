@@ -9,7 +9,7 @@ class AvailabilityInline(admin.TabularInline):
 
 @admin.register(TAProfile)
 class TAProfileAdmin(admin.ModelAdmin):
-	list_display = ("user",)
+	list_display = ("user", "display_name")
 	search_fields = ("user__username", "user__email")
 	filter_horizontal = ("eligible_courses",)
 	inlines = [AvailabilityInline]

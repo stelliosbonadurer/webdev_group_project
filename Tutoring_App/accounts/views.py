@@ -60,6 +60,9 @@ class SignUpView(CreateView):
             sid = transaction.savepoint()
             user = user_form.save()
             ta_profile = TAProfile.objects.create(user=user)
+            # Set display_name and courses from TA form
+            ta_profile.display_name = ta_form.cleaned_data.get("display_name", "")
+            ta_profile.save()
             courses = ta_form.cleaned_data.get("eligible_courses") or []
             ta_profile.eligible_courses.set(courses)
 

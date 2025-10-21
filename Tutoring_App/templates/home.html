@@ -25,9 +25,9 @@
         <div class="col">
           <div class="card h-100">
             <div class="card-body">
-              <h5 class="card-title">{{ ta.user.get_full_name|default:ta.user.username }}</h5>
+              <h5 class="card-title">{{ ta.display_name|default:ta.user.get_full_name|default:ta.user.username }}</h5>
 
-              <h6 class="mt-2">Eligible Classes</h6>
+              <h6 class="mt-2">Courses</h6>
               {% if ta.eligible_courses.all %}
                 <ul class="mb-2">
                   {% for c in ta.eligible_courses.all %}
