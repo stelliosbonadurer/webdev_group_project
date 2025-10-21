@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ ta.display_name|default:ta.user.get_full_name|default:ta.user.username }}{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12 col-lg-10 col-xl-8">
+    <h2>{{ ta.display_name|default:ta.user.get_full_name|default:ta.user.username }}</h2>
+
+    <h5 class="mt-3">Courses</h5>
+    {% if ta.eligible_courses.all %}
+      <ul>
+        {% for c in ta.eligible_courses.all %}
+          <li>{{ c.code }} — {{ c.name }}</li>
+        {% empty %}
+          <li><span class="text-muted">None</span></li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-muted">None</p>
+    {% endif %}
+
+    <h5 class="mt-3">Availability</h5>
+    {% if ta.availabilities.all %}
+      <ul>
+        {% for av in ta.availabilities.all %}
+          <li>{{ av.get_day_of_week_display }}: {{ av.start_time|time:"H:i" }} – {{ av.end_time|time:"H:i" }}</li>
+        {% empty %}
+          <li><span class="text-muted">No availability listed</span></li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-muted">No availability listed</p>
+    {% endif %}
+
+    <a href="/" class="btn btn-outline-secondary mt-3">Back</a>
+  </div>
+</div>
+{% endblock %}

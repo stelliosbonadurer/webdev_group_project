@@ -89,3 +89,32 @@ class TAProfileEditTests(TestCase):
         self.assertContains(response, "overlap")
         ta = TAProfile.objects.get(user=self.user)
         self.assertEqual(ta.availabilities.count(), 0)
+
+
+class TADetailViewTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username="ta1", email="ta1@example.com", password="pass12345"
+        )
+        self.ta = TAProfile.objects.create(user=self.user, display_name="TA One")
+        self.c1 = Course.objects.create(code="CS201", name="Algo")
+        self.c2 = Course.objects.create(code="CS202", name="Systems")
+        self.ta.eligible_courses.set([self.c1, self.c2])
+        Availability.objects.create(ta=self.ta, day_of_week=0, start_time="09:00", end_time="10:00")
+        Availability.objects.create(ta=self.ta, day_of_week=2, start_time="14:00", end_time="15:00")
+
+    def test_detail_url_and_template(self):
+        url = reverse("ta_view", args=[self.ta.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "pages/ta_view.html")
+        self.assertContains(response, "TA One")
+        self.assertContains(response, "CS201")
+        self.assertContains(response, "CS202")
+        self.assertContains(response, "Monday")
+        self.assertContains(response, "Wednesday")
+
+    def test_home_links_to_detail(self):
+        response = self.client.get(reverse("home"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, reverse("ta_view", args=[self.ta.pk]))

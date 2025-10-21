@@ -1,5 +1,5 @@
 # pages/views.py
-from django.views.generic import TemplateView, View
+from django.views.generic import TemplateView, View, DetailView
 from django.db.models import Prefetch
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
@@ -51,4 +51,17 @@ class TAProfileEditView(LoginRequiredMixin, View):
             request,
             self.template_name,
             {"ta_form": ta_form, "availability_formset": availability_formset},
+        )
+
+
+class TAProfileDetailView(DetailView):
+    model = TAProfile
+    template_name = "pages/ta_view.html"
+    context_object_name = "ta"
+
+    def get_queryset(self):
+        availability_qs = Availability.objects.order_by("day_of_week", "start_time")
+        return (
+            TAProfile.objects.select_related("user")
+            .prefetch_related("eligible_courses", Prefetch("availabilities", queryset=availability_qs))
         )
